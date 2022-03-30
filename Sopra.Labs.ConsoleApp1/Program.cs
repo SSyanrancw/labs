@@ -52,28 +52,34 @@ namespace Sopra.Labs.ConsoleApp1
         static void MostrarValores()
         {
             bool valido = false;
-            string ini, fin, salto = "";
+            string ini = "";
+            string fin = "", salto = "";
             int nIni = 0;
             int nFin = 0;
             int nSalto = 0;
 
             while (!valido)
             {
+                // Se comrpueba para cada valor si es válido, si no se reitera el bucle
                 Console.Write("Introduzca el valor inicial: ");
                 ini = Console.ReadLine();
 
+                // Valor inicial
                 if (int.TryParse(ini, out nIni))
                 {
                     Console.Write("Introduzca el valor final: ");
                     fin = Console.ReadLine();
 
+                    // Valor final
                     if (int.TryParse(fin, out nFin))
                     {
                         Console.Write("Introduzca el valor de salto: ");
                         salto = Console.ReadLine();
 
+                        // Valor de salto
                         if (int.TryParse(salto, out nSalto))
                         {
+                            // Se comprueba si la secuencia es posible y se imprime la secuencia.
                             if(nIni < nFin && nSalto > 0)
                             {
                                 valido = true;
