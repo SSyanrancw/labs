@@ -22,6 +22,7 @@ namespace Sopra.labs.ConsoleApp2
                       where r.FechaNac.Year >= 1980 && r.FechaNac.Year <= 1990
                       select r;
 
+            Console.WriteLine("Clientes nacidos entre 1980 y 1990");
             foreach (var item in r1b) Console.WriteLine($"{item.Id} {item.Nombre} {item.FechaNac.Year}");
             Console.WriteLine(Environment.NewLine);
 
@@ -37,7 +38,8 @@ namespace Sopra.labs.ConsoleApp2
                       where r.FechaNac.AddYears(25) <= fechaActual
                       select r;
 
-            foreach (var item in r2b) Console.WriteLine($"{item.Id} {item.Nombre} {item.FechaNac}");
+            Console.WriteLine("Clientes mayores de 25 años");
+            foreach (var item in r2b) Console.WriteLine($"{item.Id} {item.Nombre} {fechaActual.Year - item.FechaNac.Year} años");
             Console.WriteLine(Environment.NewLine);
 
             // Producto con el precio más alto
@@ -46,7 +48,7 @@ namespace Sopra.labs.ConsoleApp2
                 .OrderByDescending(r => r.Precio)
                 .FirstOrDefault();
 
-            Console.WriteLine($"{r3a.Id} {r3a.Descripcion} {r3a.Precio}");
+            Console.WriteLine($"Producto con el precio más alto: {r3a.Id} {r3a.Descripcion} {r3a.Precio}");
             Console.WriteLine(Environment.NewLine);
 
             // Precio medio de todos los productos
@@ -57,10 +59,10 @@ namespace Sopra.labs.ConsoleApp2
             var r4b = (from r in DataLists.ListaProductos
                       select r.Precio).Average();
             
-            Console.WriteLine($"Precio medio: {r4b}");
+            Console.WriteLine($"Precio medio de todos los productos: {r4b}");
             Console.WriteLine(Environment.NewLine);
 
-            // Prodictos con un precio inferior a la media
+            // Productos con un precio inferior a la media
 
             var r5a = DataLists.ListaProductos
                 .Where(r => r.Precio < r4a)
@@ -70,6 +72,7 @@ namespace Sopra.labs.ConsoleApp2
                       where r.Precio < r4a
                       select r;
 
+            Console.WriteLine("Productos con precio inferior a la media");
             foreach (var item in r5b) Console.WriteLine($"{item.Id} {item.Descripcion} {item.Precio}");
             Console.WriteLine(Environment.NewLine);
 
@@ -128,7 +131,7 @@ namespace Sopra.labs.ConsoleApp2
             new Cliente { Id = 2,   Nombre = "Luis Gomez Fernandez",        FechaNac = new DateTime(1961, 4, 20) },
             new Cliente { Id = 3,   Nombre = "Ana Lopez Diaz ",             FechaNac = new DateTime(1947, 1, 15) },
             new Cliente { Id = 4,   Nombre = "Fernando Martinez Perez",     FechaNac = new DateTime(1981, 8, 5) },
-            new Cliente { Id = 5,   Nombre = "Lucia Garcia Sanchez",        FechaNac = new DateTime(1973, 11, 3) }
+            new Cliente { Id = 5,   Nombre = "Lucia Garcia Sanchez",        FechaNac = new DateTime(2001, 11, 3) }
         };
 
         private static List<Producto> _listaProductos = new List<Producto>()
