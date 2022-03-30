@@ -52,8 +52,7 @@ namespace Sopra.Labs.ConsoleApp1
         static void MostrarValores()
         {
             bool valido = false;
-            string ini = "";
-            string fin = "", salto = "";
+            string ini = "", fin = "", salto = "";
             int nIni = 0;
             int nFin = 0;
             int nSalto = 0;
