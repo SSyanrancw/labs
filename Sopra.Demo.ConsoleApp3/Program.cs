@@ -181,7 +181,7 @@ namespace Sopra.Demo.ConsoleApp3
 
             // Valor total del stock
             var totalStock = contex.Products
-                .Sum(r => r.UnitsInStock);
+                .Sum(r => r.UnitsInStock * r.UnitPrice);
 
             Console.WriteLine($"Valor total del stock: {totalStock}");
 
