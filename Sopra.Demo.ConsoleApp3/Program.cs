@@ -185,6 +185,20 @@ namespace Sopra.Demo.ConsoleApp3
 
             Console.WriteLine($"Valor total del stock: {totalStock}");
 
+            // Todos los pedidos de clientes de Argentina
+            var customerID = contex.Customers
+                .Where(r => r.Country == "Argentin")
+                .Select(r => r.CustomerID)
+                .ToList();
+
+            var pedClienteArg = contex.Orders
+                .Where(r => customerID.Contains(r.CustomerID))
+                .Select(r => new { r.OrderID})
+                .ToList();
+
+            foreach (var i in pedClienteArg) Console.WriteLine($"ID Pedido: {i.OrderID}");
+
+            Console.WriteLine("Fin de los pedidos de clientes de Argentina." + Environment.NewLine);
         }
     }
 }
