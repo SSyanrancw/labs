@@ -197,6 +197,7 @@ namespace Sopra.Demo.ConsoleApp3
                 .Select(r => new { r.OrderID, r.CustomerID})
                 .ToList();
 
+            // Versión anidada
             var r17 = contex.Orders
                 .Where(r => contex.Customers
                     .Where(s => s.Country == "Argentina")
@@ -296,7 +297,6 @@ namespace Sopra.Demo.ConsoleApp3
 
             // Clientes que han pedido el producto 57
             var clientesPed57 = contex.Order_Details
-                .Include(r => r.Product)
                 .Include(r => r.Order)
                 .ThenInclude(r => r.Customer)
                 .Where(r => r.ProductID == 57)
@@ -314,7 +314,6 @@ namespace Sopra.Demo.ConsoleApp3
 
             // Clientes que han pedido el producto 72 en 1997
             var clientesPed57en97 = contex.Order_Details
-                .Include(r => r.Product)
                 .Include(r => r.Order)
                 .ThenInclude(r => r.Customer)
                 .Where(r => r.ProductID == 72 && r.Order.OrderDate.Value.Year ==  1997)
