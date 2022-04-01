@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Data;
 using Sopra.Demo.ConsoleApp3.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Sopra.Demo.ConsoleApp3
@@ -10,10 +11,11 @@ namespace Sopra.Demo.ConsoleApp3
     {
         static void Main(string[] args)
         {
-            Ejercicios();
+            //BusquedasBasicas();
+            BusquedasComplejas();
         }
 
-        static void Ejercicios()
+        static void BusquedasBasicas()
         {
             var contex = new ModelNorthwind();
 
@@ -183,22 +185,157 @@ namespace Sopra.Demo.ConsoleApp3
             var totalStock = contex.Products
                 .Sum(r => r.UnitsInStock * r.UnitPrice);
 
-            Console.WriteLine($"Valor total del stock: {totalStock}");
+            Console.WriteLine($"Valor total del stock: {totalStock}" + Environment.NewLine);
 
             // Todos los pedidos de clientes de Argentina
-            var customerID = contex.Customers
-                .Where(r => r.Country == "Argentin")
-                .Select(r => r.CustomerID)
-                .ToList();
+            var iDCliente = contex.Customers
+                .Where(r => r.Country == "Argentina")
+                .Select(r => r.CustomerID);
 
             var pedClienteArg = contex.Orders
-                .Where(r => customerID.Contains(r.CustomerID))
-                .Select(r => new { r.OrderID})
+                .Where(r => iDCliente.Contains(r.CustomerID))
+                .Select(r => new { r.OrderID, r.CustomerID})
                 .ToList();
 
-            foreach (var i in pedClienteArg) Console.WriteLine($"ID Pedido: {i.OrderID}");
+            var r17 = contex.Orders
+                .Where(r => contex.Customers
+                    .Where(s => s.Country == "Argentina")
+                    .Select(s => s.CustomerID)
+                    .Contains(r.CustomerID))
+                .ToList();
+
+            foreach (var i in pedClienteArg) Console.WriteLine($"ID Pedido: {i.OrderID} - ID Cliente: {i.CustomerID}");
 
             Console.WriteLine("Fin de los pedidos de clientes de Argentina." + Environment.NewLine);
+
+            // Listado de empleados que son mayores que sus jefes (ReportsTo es ID del jefe)
+            var empMayorJefe = contex.Employees
+                .Where(r => r.BirthDate < contex.Employees
+                    .Where(s => s.EmployeeID == r.EmployeeID)
+                    .Select(s => s.BirthDate)
+                    .FirstOrDefault())
+                .Select(r => new {r.EmployeeID, r.ReportsTo, r.BirthDate})
+                .ToList();
+
+            foreach (var i in empMayorJefe) Console.WriteLine($"ID Empleado: {i.EmployeeID} - ID Jefe: {i.ReportsTo} - Fecha de nacimiento: {i.BirthDate}");
+
+            Console.WriteLine("Fin de listados de empleados mayores que sus jefes." + Environment.NewLine);
+
+            // Listado de productos: nombre del producto, stock y valor del stock
+            var prodStockTotal = contex.Products
+                .Select(r => new { r.ProductName, r.UnitsInStock, Total = r.UnitsInStock * r.UnitPrice })
+                .ToList();
+
+            foreach (var i in prodStockTotal) Console.WriteLine($"Producto: {i.ProductName} - Stock: {i.UnitsInStock} - Valor stock: {i.Total}");
+
+            Console.WriteLine("Fin de lista de productos." + Environment.NewLine);
+
+            // Listado de empleados: nombre, apellido y número total de pedidos en 1997
+            var empPedidos97 = contex.Employees
+                .Select(r => new
+                {
+                    r.FirstName,
+                    r.LastName,
+                    Pedidos = contex.Orders.Count(s => s.EmployeeID == r.EmployeeID && s.OrderDate.Value.Year == 1997)
+                })
+                .ToList();
+
+            foreach (var i in empPedidos97) Console.WriteLine($"Nombre: {i.FirstName} - Apellidos: {i.LastName} - Pedidos: {i.Pedidos}");
+
+            Console.WriteLine("Fin de listados de empleados con sus pedidos del 97." + Environment.NewLine);
+
+            // El tiempo medio en días de la preparación de pedido (Fecha de pedido - Fecha de envío)
+            var tiempoMedioPrep = contex.Orders
+                .Where(r => r.ShippedDate.HasValue && r.OrderDate.HasValue)
+                .AsEnumerable()
+                .Average(r => (r.ShippedDate - r.OrderDate).Value.Days);
+            
+            Console.WriteLine($"Tiempo medio en días para la preparación de pedidos: {tiempoMedioPrep} días" + Environment.NewLine);
+        }
+
+        static void BusquedasComplejas()
+        {
+            var contex = new ModelNorthwind();
+
+            // Productos de la categoria Condiments y Seafood
+            var prodCat = contex.Products
+                .Include(r => r.Category)
+                .Where(r => r.Category.CategoryName == "Condiments" || r.Category.CategoryName == "Seafood")
+                .Select(r => new { r.ProductID, r.ProductName, Categ = r.Category.CategoryName })
+                .ToList();
+
+            foreach (var i in prodCat) Console.WriteLine($"ID: {i.ProductID} - Producto: {i.ProductName} - ID Categoría: {i.Categ}");
+
+            Console.WriteLine("Fin de productos de la categoria Condiments y Seafood." + Environment.NewLine);
+
+            // Listado de empleados: nombre, apellido y número total de pedidos en 1997
+            var empPedidos97 = contex.Employees
+                .Include(r => r.Orders)
+                .Select(r => new 
+                {   
+                    r.FirstName, 
+                    r.LastName, 
+                    Pedidos = r.Orders.Count(s => s.OrderDate.Value.Year == 1997)
+                })
+                .ToList();
+
+            foreach (var i in empPedidos97) Console.WriteLine($"Nombre: {i.FirstName} - Apellidos: {i.LastName} - Pedidos: {i.Pedidos}");
+
+            Console.WriteLine("Fin de listados de empleados con sus pedidos del 97." + Environment.NewLine);
+
+            // Listado de pedidos de los clientes de USA
+            var pedUSA = contex.Orders
+                .Include(r => r.Customer)
+                .Where(r => r.Customer.Country == "USA")
+                .Select(r => new {r.OrderID, r.CustomerID, Pais = r.Customer.Country})
+                .ToList();
+
+            foreach (var i in pedUSA) Console.WriteLine($"ID Pedido: {i.OrderID} - ID Cliente: {i.CustomerID} - País del cliente{i.Pais}");
+
+            Console.WriteLine("Fin de los pedidos de clientes de USA." + Environment.NewLine);
+
+            // Clientes que han pedido el producto 57
+            var clientesPed57 = contex.Order_Details
+                .Include(r => r.Product)
+                .Include(r => r.Order)
+                .ThenInclude(r => r.Customer)
+                .Where(r => r.ProductID == 57)
+                .Select(r => new { Cliente = r.Order.Customer.CompanyName, r.ProductID, ClienteID = r.Order.CustomerID })
+                .ToList();
+
+            string[] a = new string[] { };
+
+            foreach (var i in clientesPed57) {
+                a = a.Concat(new string[] { i.ClienteID }).ToArray();
+                Console.WriteLine($"ID Producto: {i.ProductID} - ID cLiente: {i.ClienteID} - Cliente: {i.Cliente}");
+            }
+
+            Console.WriteLine("Fin de los clientes que han pedido el producto 57." + Environment.NewLine);
+
+            // Clientes que han pedido el producto 72 en 1997
+            var clientesPed57en97 = contex.Order_Details
+                .Include(r => r.Product)
+                .Include(r => r.Order)
+                .ThenInclude(r => r.Customer)
+                .Where(r => r.ProductID == 72 && r.Order.OrderDate.Value.Year ==  1997)
+                .Select(r => new { Cliente = r.Order.Customer.CompanyName, r.ProductID, Fecha = r.Order.OrderDate, ClienteID = r.Order.CustomerID })
+                .ToList();
+
+            string[] b = new string[] { };
+
+            foreach (var i in clientesPed57en97)
+            {
+                b = b.Concat(new string[] { i.ClienteID }).ToArray();
+                Console.WriteLine($"ID Producto: {i.ProductID} - ID cLiente: {i.ClienteID} - Cliente: {i.Cliente} - Fecha de pedido: {i.Fecha}");
+            }
+
+            Console.WriteLine("Fin de los clientes que han pedido el producto 72 en 1997." + Environment.NewLine);
+
+            // Clientes 57 + 72 en 1997          
+            var clientes57y72 = a.Intersect(b).ToList();
+
+            foreach (var i in clientes57y72) Console.WriteLine(i);
+            Console.WriteLine("Fin de la intersección de las dos anteriores listas." + Environment.NewLine);
         }
     }
 }
