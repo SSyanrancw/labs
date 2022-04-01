@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sopra.Labs.ConsoleApp1", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sopra.labs.ConsoleApp2", "Sopra.labs.ConsoleApp2\Sopra.labs.ConsoleApp2.csproj", "{3C643336-E414-4CA7-AC0A-E70D44EBAB64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sopra.Demo.ConsoleApp3", "Sopra.Demo.ConsoleApp3\Sopra.Demo.ConsoleApp3.csproj", "{13304AB7-61D8-49F1-B330-1806CA32C060}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sopra.Labs.ConsoleApp3", "Sopra.Demo.ConsoleApp3\Sopra.Labs.ConsoleApp3.csproj", "{13304AB7-61D8-49F1-B330-1806CA32C060}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
