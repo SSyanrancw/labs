@@ -335,6 +335,21 @@ namespace Sopra.Demo.ConsoleApp3
 
             foreach (var i in clientes57y72) Console.WriteLine(i);
             Console.WriteLine("Fin de la intersección de las dos anteriores listas." + Environment.NewLine);
+
+            // Líneas de pedidos agrupadas por pedidos
+            var lineaPedido = contex.Order_Details
+                .AsEnumerable()
+                .GroupBy(r => r.OrderID)
+                .ToList();
+
+            foreach (var i in lineaPedido)
+            {
+                Console.WriteLine($"Pedido {i.Key}: {i.Count()}");
+
+                foreach (var j in i) Console.WriteLine($"{j.ProductID}");
+
+                Console.WriteLine();
+            }
         }
     }
 }
