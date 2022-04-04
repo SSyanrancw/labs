@@ -55,9 +55,7 @@ namespace Sopra.Labs.ConsoleApp4
             http.BaseAddress = new Uri("http://school.labs.com.es/api/students/");
 
             Console.Write("Estudiante: ");
-            string estudiante = Console.ReadLine();
-
-            HttpResponseMessage response = http.GetAsync(estudiante).Result;
+            HttpResponseMessage response = http.GetAsync(Console.ReadLine()).Result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
