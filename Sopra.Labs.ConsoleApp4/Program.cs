@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Sopra.Labs.ConsoleApp4
@@ -10,7 +13,8 @@ namespace Sopra.Labs.ConsoleApp4
         static void Main(string[] args)
         {
             //ZipInfo();
-            Estudiante();
+            //GetStudent();
+            PostStudent();
         }
 
         static void ZipInfo()
@@ -49,7 +53,7 @@ namespace Sopra.Labs.ConsoleApp4
             else Console.WriteLine($"Error: {response.StatusCode}");
         }
 
-        static void Estudiante()
+        static void GetStudent()
         {
             var http = new HttpClient();
             http.BaseAddress = new Uri("http://school.labs.com.es/api/students/");
@@ -71,6 +75,35 @@ namespace Sopra.Labs.ConsoleApp4
                 Console.WriteLine($"Clase: ({data.ClassId}) {data.Class}");
 
                 Console.WriteLine(Environment.NewLine);
+            }
+            else Console.WriteLine($"Error: {response.StatusCode}");
+        }
+
+        static void PostStudent()
+        {
+            var http = new HttpClient();
+            http.BaseAddress = new Uri("http://school.labs.com.es/api/students/");
+
+            http.DefaultRequestHeaders.Add("Accept", "application/json");
+            http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var student = new Student()
+            {
+                Id = 0,
+                Firstname = "Miguel",
+                Lastname = "Cervantes",
+                DateOfBirth = new DateTime(1547, 10, 9),
+                ClassId = 2
+            };
+
+            var content = new StringContent(JsonConvert.SerializeObject(student), Encoding.UTF8, "application/json");
+
+            var response = http.PostAsync("", content).Result;
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                var responseBody = response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(responseBody);
             }
             else Console.WriteLine($"Error: {response.StatusCode}");
         }
