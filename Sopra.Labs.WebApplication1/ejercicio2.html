@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Visor de Imagenes</h1>
+                <hr />
+                <h2><b>URL:</b> <span></span></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" id="imagenes">
+                <div class="card-columns">
+                    <!-- class="img-fluid" -->
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <form>
+                    <div class="mb-3">
+                        <label>URL de la Imagen</label>
+                        <input type="text" class="form-control" id="url"/>
+                    </div>
+                    <button id="cargar" type="button" class="btn btn-success">Cargar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        document.getElementById("cargar").onclick = function () {
+            var imagen = document.createElement("img");
+            let url = document.getElementById("url").value;
+            imagen.src = url;
+            imagen.classList.add("img-fluid");
+
+            // Se le asigna la funcionalidad a cada imagen cuando se crean
+            imagen.onmouseover = function (e) {
+                document.querySelector("span").innerHTML = url;
+            }
+
+            document.getElementById("imagenes").appendChild(imagen);
+        }
+    </script>
+</body>
+</html>
